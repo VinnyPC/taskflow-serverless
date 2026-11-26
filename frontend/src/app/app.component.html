@@ -1,0 +1,34 @@
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">TF</span><div><strong>TaskFlow</strong><small>Acadêmico</small></div></div>
+  <div class="summary"><span>{{ completedCount }}/{{ tasks.length }}</span> tarefas concluídas</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div><span class="eyebrow">PAINEL ACADÊMICO</span><h1>Organize seus prazos.<br><em>Respire melhor.</em></h1><p>Um painel simples para transformar entregas em um plano claro.</p></div>
+    <form class="task-form" (ngSubmit)="save()">
+      <div class="form-head"><div><span class="eyebrow">{{ editingId ? 'EDITANDO' : 'NOVA TAREFA' }}</span><h2>{{ editingId ? 'Atualize os detalhes' : 'O que vem a seguir?' }}</h2></div><button *ngIf="editingId" type="button" class="text-button" (click)="cancel()">Cancelar</button></div>
+      <label>Título<input name="title" [(ngModel)]="form.title" maxlength="120" placeholder="Ex.: Entregar relatório final" required></label>
+      <div class="form-grid"><label>Disciplina<input name="subject" [(ngModel)]="form.subject" maxlength="80" placeholder="Computação em Nuvem" required></label><label>Prazo<input name="dueDate" [(ngModel)]="form.dueDate" type="date" required></label></div>
+      <label>Descrição<textarea name="description" [(ngModel)]="form.description" maxlength="1000" rows="3" placeholder="Notas, requisitos ou lembretes..."></textarea></label>
+      <div class="form-grid"><label>Prioridade<select name="priority" [(ngModel)]="form.priority"><option value="low">Baixa</option><option value="medium">Média</option><option value="high">Alta</option></select></label><label>Status<select name="status" [(ngModel)]="form.status"><option value="pending">Pendente</option><option value="in_progress">Em andamento</option><option value="completed">Concluída</option></select></label></div>
+      <button class="primary" type="submit" [disabled]="saving">{{ saving ? 'Salvando...' : (editingId ? 'Salvar alterações' : 'Adicionar tarefa') }}</button>
+    </form>
+  </section>
+
+  <section class="tasks-section">
+    <div class="section-head"><div><span class="eyebrow">SEU SEMESTRE</span><h2>Tarefas e entregas</h2></div><nav aria-label="Filtrar tarefas"><button [class.active]="filter === 'all'" (click)="filter = 'all'">Todas</button><button [class.active]="filter === 'pending'" (click)="filter = 'pending'">Pendentes</button><button [class.active]="filter === 'in_progress'" (click)="filter = 'in_progress'">Em andamento</button><button [class.active]="filter === 'completed'" (click)="filter = 'completed'">Concluídas</button></nav></div>
+    <p class="error" *ngIf="error">{{ error }} <button (click)="load()">Tentar novamente</button></p>
+    <div class="state" *ngIf="loading">Carregando suas tarefas...</div>
+    <div class="state" *ngIf="!loading && visibleTasks.length === 0"><strong>Nenhuma tarefa por aqui.</strong><span>Cadastre uma entrega ou escolha outro filtro.</span></div>
+    <div class="task-list" *ngIf="!loading">
+      <article class="task-card" *ngFor="let task of visibleTasks" [class.done]="task.status === 'completed'">
+        <div class="date"><strong>{{ task.dueDate | date:'dd' }}</strong><span>{{ task.dueDate | date:'MMM':'UTC':'pt-BR' }}</span></div>
+        <div class="task-copy"><div class="badges"><span class="subject">{{ task.subject }}</span><span class="priority" [attr.data-priority]="task.priority">{{ priorityLabel(task.priority) }}</span></div><h3>{{ task.title }}</h3><p *ngIf="task.description">{{ task.description }}</p></div>
+        <div class="actions"><select aria-label="Alterar status" [ngModel]="task.status" (ngModelChange)="setStatus(task, $event)"><option value="pending">Pendente</option><option value="in_progress">Em andamento</option><option value="completed">Concluída</option></select><div><button class="icon-button" (click)="edit(task)" aria-label="Editar tarefa">Editar</button><button class="icon-button danger" (click)="remove(task)" aria-label="Excluir tarefa">Excluir</button></div></div>
+      </article>
+    </div>
+  </section>
+</main>
+<footer>TaskFlow Acadêmico <span>•</span> Arquitetura serverless na AWS</footer>
+

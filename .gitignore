@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.angular/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.zip
+.DS_Store
+

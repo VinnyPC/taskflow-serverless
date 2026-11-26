@@ -1,0 +1,14 @@
+{
+  "name": "taskflow-serverless",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test",
+    "infra:fmt": "terraform -chdir=infra fmt -recursive",
+    "infra:validate": "terraform -chdir=infra validate"
+  }
+}
+
